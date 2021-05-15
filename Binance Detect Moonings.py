@@ -246,7 +246,8 @@ def sell_coins():
                     symbol = coin,
                     side = 'SELL',
                     type = 'MARKET',
-                    quantity = coins_bought[coin]['volume']
+                    quantity = coins_bought[coin]['volume']*0.995, #edit SG
+                    recvWindow = 200
 
                 )
 

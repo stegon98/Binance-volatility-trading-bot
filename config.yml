@@ -25,9 +25,14 @@ trading_options:
     - BTT
     - DOWN
     - UP
+    - BAR
+    - ASR
+    - JUV
+    - ATM
+    - PSG
 
   # Maximum number of coints to hold
-  MAX_COINS: 10
+  MAX_COINS: 1
 
   # the amount of time in SECONDS to calculate the differnce from the current price  10
   TIME_DIFFERENCE: 1
