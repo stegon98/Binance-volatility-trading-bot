@@ -77,7 +77,7 @@ def wait_for_price():
 
     else:
         last_price = get_price()
-        infoChange = -100.00
+        infoChange = 100.00 #--- -100
         infoCoin = 'none'
         infoStart = 0.00
         infoStop = 0.00
@@ -86,14 +86,14 @@ def wait_for_price():
         for coin in initial_price:
             threshold_check = (float(last_price[coin]['price']) - float(initial_price[coin]['price'])) / float(initial_price[coin]['price']) * 100
 
-            if threshold_check > infoChange:
+            if threshold_check < infoChange: #--- >
                 infoChange = threshold_check
                 infoCoin = coin
                 infoStart = initial_price[coin]['price']
                 infoStop = last_price[coin]['price']
 
             # each coin with higher gains than our CHANGE_IN_PRICE is added to the volatile_coins dict if less than MAX_COINS is not reached.
-            if threshold_check > CHANGE_IN_PRICE:
+            if threshold_check < CHANGE_IN_PRICE: #--- >
                 if len(coins_bought) < MAX_COINS:
                     volatile_coins[coin] = threshold_check
                     volatile_coins[coin] = round(volatile_coins[coin], 3)
@@ -103,10 +103,10 @@ def wait_for_price():
                     print(f'{txcolors.WARNING}{coin} has gained {threshold_check}% in the last {TIME_DIFFERENCE} seconds, but you are holding max number of coins{txcolors.DEFAULT}')
 
         # Print more info if there are no volatile coins this iteration
-        if infoChange < CHANGE_IN_PRICE:
-                print(f'No coins moved more than {CHANGE_IN_PRICE}% in the last {TIME_DIFFERENCE} second(s)')
+        #if infoChange < CHANGE_IN_PRICE: --- commento
+        #        print(f'No coins moved more than {CHANGE_IN_PRICE}% in the last {TIME_DIFFERENCE} second(s)')
 
-        print(f'Max movement {float(infoChange):.2f}% by {infoCoin} from {float(infoStart):.4f} to {float(infoStop):.4f}')
+        print(f'Min movement {float(infoChange):.2f}% by {infoCoin} from {float(infoStart):.4f} to {float(infoStop):.4f}') #--- max
 
         return volatile_coins, len(volatile_coins), last_price
 
@@ -219,12 +219,12 @@ def sell_coins():
 
         LastPrice = float(last_price[coin]['price'])
         BuyPrice = float(coins_bought[coin]['bought_at'])
-        PriceChange = float((LastPrice - BuyPrice) / BuyPrice * 100)
+        PriceChange = float((LastPrice - BuyPrice) / BuyPrice * 98) #100
 
         # check that the price is above the take profit and readjust SL and TP accordingly if trialing stop loss used
         if float(last_price[coin]['price']) > TP and USE_TRAILING_STOP_LOSS:
             print("TP reached, adjusting TP and SL accordingly to lock-in profit")
-            
+
             # increasing TP by TRAILING_TAKE_PROFIT (essentially next time to readjust SL)
             coins_bought[coin]['take_profit'] += TRAILING_TAKE_PROFIT
             coins_bought[coin]['stop_loss'] = coins_bought[coin]['take_profit'] - TRAILING_STOP_LOSS
@@ -389,8 +389,7 @@ if __name__ == '__main__':
     print('Press Ctrl-Q to stop the script')
 
     if not TESTNET:
-        print('WARNING: You are using the Mainnet and live funds. Waiting 30 seconds as a security measure')
-        time.sleep(30)
+        print('WARNING: You are using your')
 
     while True:
         orders, last_price, volume = buy()
